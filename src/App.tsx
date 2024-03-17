@@ -24,7 +24,7 @@ interface PanelToolbarProps {
   path: MosaicBranch[];
 }
 
-function PanelToolbar({ title, path }: PaneltoobarProps) {
+function PanelToolbar({ title, path }: PanelToolbarProps) {
   let context = useContext(MosaicContext);
   return (
     <>
@@ -83,11 +83,7 @@ function PanelChooser() {
   return (
     <div className="flex items-center justify-center w-full h-full absolute left-0 top-0 bg-night-100 bg-opacity-50 z-10">
       <div className="w-3/4 h-3/4 bg-night relative">
-        <Scrollbar
-          disableTracksWidthCompensation
-          className="p-10"
-          style={{ position: "" }}
-        >
+        <Scrollbar disableTracksWidthCompensation className="p-10">
           <div className="p-10 pr-14">
             <h2 className="text-2xl">Choose a new panel</h2>
             <br />
@@ -112,7 +108,7 @@ function PanelChooser() {
   );
 }
 
-function Panel() {}
+// function Panel() {}
 
 function App() {
   return (
