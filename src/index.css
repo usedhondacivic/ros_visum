@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+	@apply bg-ivory dark:bg-night-100 text-night dark:text-ivory;
+}
+
+.mosaic {
+	@apply h-[calc(100%-3.5rem)]
+}
+
+.mosaic-window-body {
+	@apply bg-ivory dark:bg-night-400 pl-2 pr-2 !important;
+}
+
+.mosaic-window-toolbar {
+	@apply bg-ivory dark:bg-night-500 pl-2 pr-2 !important;
+}
+
+.mosaic-split.-row {
+	@apply w-1 -ml-0.5 !important;
+}
+
+.mosaic-split.-column {
+	@apply h-1 -mt-0.5 !important;
+}
+
+.mosaic-drop-target .drop-target-container .drop-target {
+	@apply bg-hunter_green bg-opacity-20 border-none !important;
+}
