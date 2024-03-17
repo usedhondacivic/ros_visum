@@ -5,8 +5,4 @@ import "./index.css";
 import "@fontsource/didact-gothic";
 import "@fontsource/moirai-one";
 
-ReactDOM.createRoot(document.getElementById("app")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+ReactDOM.createRoot(document.getElementById("app")!).render(<App />);
