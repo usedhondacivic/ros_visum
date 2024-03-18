@@ -6,7 +6,7 @@ import { Scrollbar } from "react-scrollbars-custom";
 
 export function NavBar() {
   return (
-    <div className="w-full h-[3.5rem] bg-night-400 flex items-center pl-5 pr-5">
+    <div className="w-full h-[3.5rem] bg-night-100 flex items-center border-b-night-500 border-b-2 pl-5 pr-5">
       <h1 className="text-4xl font-logo text-night-900 font-bold">
         <a
           className="cursor-pointer hover:text-ivory"

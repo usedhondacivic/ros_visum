@@ -12,11 +12,16 @@ body {
 }
 
 .mosaic-window-body {
-	@apply bg-ivory dark:bg-night-400 pl-2 pr-2 !important;
+	@apply bg-ivory dark:bg-night-100 pl-2 pr-2 !important;
 }
 
 .mosaic-window-toolbar {
-	@apply bg-ivory dark:bg-night-500 pl-2 pr-2 !important;
+	@apply bg-ivory dark:bg-night-100 pl-2 pr-2 border-b-night-500 border-b-2 !important;
+}
+
+.mosaic-split.-row,
+.mosaic-split.-column {
+	@apply bg-night-300 hover:bg-night-600 !important;
 }
 
 .mosaic-split.-row {
