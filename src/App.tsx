@@ -32,7 +32,7 @@ function App() {
                 </div>
               );
             }}
-            className="text-night dark:text-ivory"
+            className="text-ivory"
           >
             <div className="w-full h-full">
               <Panel panelPath="../panels/ros2djs.tsx" />

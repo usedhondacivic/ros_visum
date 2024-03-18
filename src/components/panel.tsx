@@ -1,7 +1,6 @@
 import React from "react";
-import { FullscreenPrompt } from "./ui";
 import { MosaicContext, MosaicBranch } from "react-mosaic-component";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 
 const userPanels: { [key: string]: React.FC } = {};
@@ -48,9 +47,7 @@ type PanelPreviewProps = {
   children: React.ReactNode;
 };
 function PanelPreview({ children }: PanelPreviewProps) {
-  return (
-    <div className="w-full h-auto bg-night-100 aspect-square">{children}</div>
-  );
+  return <div className="w-full h-auto  aspect-square">{children}</div>;
 }
 
 export function PanelChooser() {
@@ -69,24 +66,25 @@ export function PanelChooser() {
     );
   }
   return (
-    <FullscreenPrompt>
-      <h2 className="text-2xl">Choose a new panel</h2>
-      <br />
+    <>
       <p className="text-lg">Standard Panels</p>
-      <div className="grid grid-cols-5 gap-5 pt-5 pb-10">{standardPanels}</div>
-      <p className="text-lg">User Panels</p>
+      <div className="grid grid-cols-5 gap-5 py-5">{standardPanels}</div>
+      <div className="flex items-center">
+        <p className="text-lg inline">User Panels</p>
+        <a
+          href="https://github.com/usedhondacivic/ros_visum/tree/main/src/userPanels"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <QuestionMarkCircleIcon className="h-4 ml-1 mb-1 opacity-50 inline-block" />
+        </a>
+      </div>
       {customPanels.length === 0 ? (
-        <p className="text-night-800">
-          Theres nothing here... <br /> <br />
-          If you're using the hosted version of Visum, you're out of luck.
-          <br />
-          If you're self hosting through Docker, mount your panel components to{" "}
-          <code>/src/userPanels/</code>
-        </p>
+        <p className="text-night-800">Theres nothing here...</p>
       ) : (
         <div className="grid grid-cols-5 gap-5 pt-5 pb-10">{customPanels}</div>
       )}
-    </FullscreenPrompt>
+    </>
   );
 }
 

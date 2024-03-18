@@ -4,19 +4,19 @@
 
 html,
 body {
-	@apply bg-ivory dark:bg-night-100 text-night dark:text-ivory;
+	@apply bg-night-100 text-ivory;
 }
 
 .mosaic {
-	@apply h-[calc(100%-3.5rem)]
+	@apply h-[calc(100%-3.5rem)] bg-night-400;
 }
 
 .mosaic-window-body {
-	@apply bg-ivory dark:bg-night-100 pl-2 pr-2 !important;
+	@apply bg-night-100 !important;
 }
 
 .mosaic-window-toolbar {
-	@apply bg-ivory dark:bg-night-100 pl-2 pr-2 border-b-night-500 border-b-2 !important;
+	@apply bg-night-100 pl-2 pr-2 border-b-night-500 border-b-2 !important;
 }
 
 .mosaic-split.-row,
