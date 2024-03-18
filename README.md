@@ -1,6 +1,6 @@
 # ROS Visum
 
-An extendable ROS dashboard uniting disperate open source visualization tools.
+An extendable ROS dashboard uniting disparate open source visualization tools.
 
 Combines the following:
 * From the [Robot Web Tools Project](https://robotwebtools.github.io/)
