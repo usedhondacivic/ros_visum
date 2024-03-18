@@ -1,5 +1,3 @@
-import React, { Suspense } from "react";
-import { useContext, useState } from "react";
 import { Mosaic, MosaicWindow } from "react-mosaic-component";
 
 import "react-mosaic-component/react-mosaic-component.css";
@@ -37,7 +35,7 @@ function App() {
             className="text-night dark:text-ivory"
           >
             <div className="w-full h-full">
-              <Panel component="ros3djs" />
+              <Panel panelPath="../panels/ros2djs.tsx" />
             </div>
           </MosaicWindow>
         )}

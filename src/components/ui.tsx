@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import { useContext, useState } from "react";
+import React from "react";
+import { useState } from "react";
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { PanelChooser } from "./panel";
 import { Scrollbar } from "react-scrollbars-custom";
@@ -26,7 +26,10 @@ export function NavBar() {
   );
 }
 
-export function FullscreenPrompt({ children }) {
+type FullscreenPromptProps = {
+  children: React.ReactNode;
+};
+export function FullscreenPrompt({ children }: FullscreenPromptProps) {
   const [visible, setVisible] = useState(false);
   return (
     <>
