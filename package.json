@@ -17,6 +17,7 @@
     "@fontsource/roboto": "^5.0.12",
     "@heroicons/react": "^2.1.1",
     "@mui/material": "^5.15.13",
+    "list-react-files": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-mosaic-component": "^6.1.0",
