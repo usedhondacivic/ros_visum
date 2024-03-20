@@ -47,7 +47,11 @@ type PanelPreviewProps = {
   children: React.ReactNode;
 };
 function PanelPreview({ children }: PanelPreviewProps) {
-  return <div className="w-full h-auto  aspect-square">{children}</div>;
+  return (
+    <div className="w-full h-auto border-night-600 border-[1px] rounded-lg text-center aspect-square">
+      {children}
+    </div>
+  );
 }
 
 export function PanelChooser() {

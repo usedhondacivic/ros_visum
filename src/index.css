@@ -8,7 +8,7 @@ body {
 }
 
 .mosaic {
-	@apply h-[calc(100%-3.5rem)] bg-night-400;
+	@apply h-[calc(100%-3.5rem)] bg-night-100;
 }
 
 .mosaic-window-body {
@@ -16,20 +16,21 @@ body {
 }
 
 .mosaic-window-toolbar {
-	@apply bg-night-100 pl-2 pr-2 border-b-night-500 border-b-2 !important;
+	@apply bg-night-100 pl-2 pr-2 border-b-night-700 border-b-[1px] !important;
 }
 
-.mosaic-split.-row,
-.mosaic-split.-column {
-	@apply bg-night-300 hover:bg-night-600 !important;
+
+.mosaic-split.-row:hover>.mosaic-split-line,
+.mosaic-split.-column:hover>.mosaic-split-line {
+	@apply bg-ivory !important;
 }
 
-.mosaic-split.-row {
-	@apply w-1 -ml-0.5 !important;
+.mosaic-split.-row .mosaic-split-line {
+	@apply bg-night-800 w-[1px];
 }
 
-.mosaic-split.-column {
-	@apply h-1 -mt-0.5 !important;
+.mosaic-split.-column .mosaic-split-line {
+	@apply bg-night-800 h-[1px];
 }
 
 .mosaic-drop-target .drop-target-container .drop-target {
