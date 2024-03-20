@@ -82,7 +82,7 @@ export function FullscreenPrompt({
   return (
     <Dialog>
       <DialogTrigger>{triggerText}</DialogTrigger>
-      <DialogContent className="bg-night-100 border-night-600">
+      <DialogContent className="max-w-full w-max bg-night-100 border-night-600">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

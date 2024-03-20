@@ -43,12 +43,11 @@ export function PanelToolbar({ title, path }: PanelToolbarProps) {
 }
 
 type PanelPreviewProps = {
-  panelComponentName?: string;
   children: React.ReactNode;
 };
 function PanelPreview({ children }: PanelPreviewProps) {
   return (
-    <div className="w-full h-auto border-night-600 border-[1px] rounded-lg text-center aspect-square">
+    <div className="m-2 w-36 inline-block border-night-600 border-[1px] rounded-lg text-center aspect-square">
       {children}
     </div>
   );
@@ -72,7 +71,9 @@ export function PanelChooser() {
   return (
     <>
       <p className="text-lg">Standard Panels</p>
-      <div className="grid grid-cols-5 gap-5 py-5">{standardPanels}</div>
+      <div className="w-full flex flex-row flex-wrap justify-center">
+        {standardPanels}
+      </div>
       <div className="flex items-center">
         <p className="text-lg inline">User Panels</p>
         <a
@@ -86,7 +87,9 @@ export function PanelChooser() {
       {customPanels.length === 0 ? (
         <p className="text-night-800">Theres nothing here...</p>
       ) : (
-        <div className="grid grid-cols-5 gap-5 pt-5 pb-10">{customPanels}</div>
+        <div className="w-full grid grid-cols-5 gap-5 pt-5 pb-10">
+          {customPanels}
+        </div>
       )}
     </>
   );

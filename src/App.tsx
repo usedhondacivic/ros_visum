@@ -1,11 +1,10 @@
-import { useContext } from "react";
 import { Mosaic, MosaicWindow } from "react-mosaic-component";
 
 import "react-mosaic-component/react-mosaic-component.css";
 
 import { NavBar } from "./components/ui";
 import { Panel, PanelToolbar } from "./components/panel";
-import { ROSLibContext } from "./components/roslibProvider";
+import { ROSLibContextProvider } from "./components/roslibProvider";
 
 export type ViewId = "a" | "b" | "c" | "new";
 
@@ -17,9 +16,8 @@ const TITLE_MAP: Record<ViewId, string> = {
 };
 
 function App() {
-  const rosInfo = useContext(ROSLibContext);
   return (
-    <ROSLibContext.Provider value={rosInfo}>
+    <ROSLibContextProvider>
       <NavBar />
       <Mosaic<ViewId>
         className="mosaic-visum-theme"
@@ -52,7 +50,7 @@ function App() {
           },
         }}
       />
-    </ROSLibContext.Provider>
+    </ROSLibContextProvider>
   );
 }
 

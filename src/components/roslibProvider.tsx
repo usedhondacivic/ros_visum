@@ -1,26 +1,39 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import ROSLIB from "roslib";
 
-const ROSLibInfo = {
+export type ROSLibInfoType = {
+  ros: ROSLIB.Ros;
+  rosBridgeServerAddr: string;
+  gzServerAddr: string;
+};
+
+const initROSLibInfo: ROSLibInfoType = {
   ros: new ROSLIB.Ros({}),
   rosBridgeServerAddr: "ws://localhost:9090",
   gzServerAddr: "ws://localhost:9091",
 };
 
-export const ROSLibContext = createContext(ROSLibInfo);
+export const ROSLibWriteContext = createContext<Function>(() => null);
+export const ROSLibReadContext = createContext(initROSLibInfo);
 
 export function ROSLibContextProvider({ children }: any) {
-  const rosInfo = useContext(ROSLibContext);
+  const [ROSLibInfo, setROSLibInfo] = useState(initROSLibInfo);
+
   return (
-    <ROSLibContext.Provider value={rosInfo}>{children}</ROSLibContext.Provider>
+    <ROSLibReadContext.Provider value={ROSLibInfo}>
+      <ROSLibWriteContext.Provider value={setROSLibInfo}>
+        {children}
+      </ROSLibWriteContext.Provider>
+    </ROSLibReadContext.Provider>
   );
 }
 
 export function ConnectionDialog() {
-  const rosInfo = useContext(ROSLibContext);
+  const rosInfo = useContext(ROSLibReadContext);
+  const setRosInfo = useContext(ROSLibWriteContext);
   return (
     <>
       <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -28,10 +41,13 @@ export function ConnectionDialog() {
         <Input
           type="ros_bridge"
           placeholder="ws://localhost:9090"
-          className="border-night-600"
+          className="w-80 border-night-600"
           defaultValue={rosInfo.rosBridgeServerAddr}
           onChange={(e) => {
-            rosInfo.rosBridgeServerAddr = e.target.value;
+            setRosInfo({
+              ...rosInfo,
+              rosBridgeServerAddr: e.target.value,
+            });
           }}
         />
       </div>
@@ -41,10 +57,13 @@ export function ConnectionDialog() {
         <Input
           type="gazebo"
           placeholder="ws://localhost:9091"
-          className="border-night-600"
+          className="w-80 border-night-600"
           defaultValue={rosInfo.gzServerAddr}
           onChange={(e) => {
-            rosInfo.gzServerAddr = e.target.value;
+            setRosInfo({
+              ...rosInfo,
+              gzServerAddr: e.target.value,
+            });
           }}
         />
       </div>
@@ -53,7 +72,7 @@ export function ConnectionDialog() {
 }
 
 export function ConnectionIndicator() {
-  const rosInfo = useContext(ROSLibContext);
+  const rosInfo = useContext(ROSLibReadContext);
   return (
     <div className="text-night-900">
       <p className="text-xs">
