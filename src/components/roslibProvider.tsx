@@ -2,18 +2,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { createContext, useContext, useState } from "react";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
+
 import ROSLIB from "roslib";
 
 export type ROSLibInfoType = {
   ros: ROSLIB.Ros;
   rosBridgeServerAddr: string;
   gzServerAddr: string;
+  connected: boolean;
 };
 
 const initROSLibInfo: ROSLibInfoType = {
   ros: new ROSLIB.Ros({}),
   rosBridgeServerAddr: "ws://localhost:9090",
   gzServerAddr: "ws://localhost:9091",
+  connected: false,
 };
 
 export const ROSLibWriteContext = createContext<Function>(() => null);
@@ -21,6 +25,23 @@ export const ROSLibReadContext = createContext(initROSLibInfo);
 
 export function ROSLibContextProvider({ children }: any) {
   const [ROSLibInfo, setROSLibInfo] = useState(initROSLibInfo);
+
+  ROSLibInfo.ros.connect(ROSLibInfo.rosBridgeServerAddr);
+  ROSLibInfo.ros.on("connection", () => {
+    setROSLibInfo({
+      ...ROSLibInfo,
+      connected: true,
+    });
+  });
+  ROSLibInfo.ros.on("error", function (error) {
+    console.log(error);
+  });
+  ROSLibInfo.ros.on("close", () => {
+    setROSLibInfo({
+      ...ROSLibInfo,
+      connected: false,
+    });
+  });
 
   return (
     <ROSLibReadContext.Provider value={ROSLibInfo}>
@@ -32,8 +53,8 @@ export function ROSLibContextProvider({ children }: any) {
 }
 
 export function ConnectionDialog() {
-  const rosInfo = useContext(ROSLibReadContext);
-  const setRosInfo = useContext(ROSLibWriteContext);
+  const ROSLibInfo = useContext(ROSLibReadContext);
+  const setROSLibInfo = useContext(ROSLibWriteContext);
   return (
     <>
       <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -41,11 +62,11 @@ export function ConnectionDialog() {
         <Input
           type="ros_bridge"
           placeholder="ws://localhost:9090"
-          className="w-80 border-night-600"
-          defaultValue={rosInfo.rosBridgeServerAddr}
+          className={"w-80 border-night-600"}
+          defaultValue={ROSLibInfo.rosBridgeServerAddr}
           onChange={(e) => {
-            setRosInfo({
-              ...rosInfo,
+            setROSLibInfo({
+              ...ROSLibInfo,
               rosBridgeServerAddr: e.target.value,
             });
           }}
@@ -58,10 +79,10 @@ export function ConnectionDialog() {
           type="gazebo"
           placeholder="ws://localhost:9091"
           className="w-80 border-night-600"
-          defaultValue={rosInfo.gzServerAddr}
+          defaultValue={ROSLibInfo.gzServerAddr}
           onChange={(e) => {
-            setRosInfo({
-              ...rosInfo,
+            setROSLibInfo({
+              ...ROSLibInfo,
               gzServerAddr: e.target.value,
             });
           }}
@@ -72,13 +93,29 @@ export function ConnectionDialog() {
 }
 
 export function ConnectionIndicator() {
-  const rosInfo = useContext(ROSLibReadContext);
+  const ROSLibInfo = useContext(ROSLibReadContext);
   return (
     <div className="text-night-900">
-      <p className="text-xs">
-        ROS Bridge Server ({rosInfo.rosBridgeServerAddr})
-      </p>
-      <p className="text-xs">Gazebo Server ({rosInfo.gzServerAddr}) </p>
+      <div className="flex justify-start content-center">
+        <p className={"text-xs inline-block mr-2"}>
+          ROS Bridge Server ({ROSLibInfo.rosBridgeServerAddr})
+        </p>
+        {ROSLibInfo.connected ? (
+          <CheckCircleIcon className="text-lime-500 h-4 inline-block" />
+        ) : (
+          <XCircleIcon className="text-flame-500 h-4 inline-block" />
+        )}
+      </div>
+      <div className="flex justify-start content-center">
+        <p className={"text-xs inline-block mr-2"}>
+          Gazebo Server ({ROSLibInfo.gzServerAddr}){" "}
+        </p>
+        {ROSLibInfo.connected ? (
+          <CheckCircleIcon className="text-lime-500 h-4 inline-block" />
+        ) : (
+          <XCircleIcon className="text-flame-500 h-4 inline-block" />
+        )}
+      </div>
     </div>
   );
 }

@@ -36,7 +36,7 @@ function App() {
             className="text-ivory"
           >
             <div className="w-full h-full">
-              <Panel panelPath="../panels/ros2djs.tsx" />
+              <Panel panelPath="../panels/ros3djs.tsx" />
             </div>
           </MosaicWindow>
         )}

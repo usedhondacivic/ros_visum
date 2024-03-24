@@ -5,6 +5,8 @@ import { useContext } from "react";
 
 const userPanels: { [key: string]: React.FC } = {};
 const panels: { [key: string]: React.FC } = {};
+const userPanelsPreview: { [key: string]: React.FC } = {};
+const panelsPreview: { [key: string]: React.FC } = {};
 
 type PanelImport = { [key: string]: React.FC };
 const panelImport: PanelImport = import.meta.glob("../panels/*.tsx", {
@@ -15,12 +17,29 @@ const userPanelImport: PanelImport = import.meta.glob("../userPanels/*.tsx", {
   import: "Component",
   eager: true,
 });
+const panelPreviewImport: PanelImport = import.meta.glob("../panels/*.tsx", {
+  import: "Preview",
+  eager: true,
+});
+const userPanelPreviewImport: PanelImport = import.meta.glob(
+  "../userPanels/*.tsx",
+  {
+    import: "Preview",
+    eager: true,
+  },
+);
 
 Object.entries(panelImport).forEach(([panelPath, panelImport]) => {
   panels[panelPath] = panelImport;
 });
 Object.entries(userPanelImport).forEach(([panelPath, panelImport]) => {
   userPanels[panelPath] = panelImport;
+});
+Object.entries(panelPreviewImport).forEach(([panelPath, panelImport]) => {
+  panelsPreview[panelPath] = panelImport;
+});
+Object.entries(userPanelPreviewImport).forEach(([panelPath, panelImport]) => {
+  userPanelsPreview[panelPath] = panelImport;
 });
 
 type PanelToolbarProps = {
@@ -59,13 +78,17 @@ export function PanelChooser() {
   for (let panelPath in panels) {
     if (!panels[panelPath]) continue;
     standardPanels.push(
-      <PanelPreview key={panelPath}>{panels[panelPath]({})}</PanelPreview>,
+      <PanelPreview key={panelPath}>
+        {panelsPreview[panelPath]({})}
+      </PanelPreview>,
     );
   }
   for (let panelPath in userPanels) {
     if (!userPanels[panelPath]) continue;
     customPanels.push(
-      <PanelPreview key={panelPath}>{userPanels[panelPath]({})}</PanelPreview>,
+      <PanelPreview key={panelPath}>
+        {userPanelsPreview[panelPath]({})}
+      </PanelPreview>,
     );
   }
   return (
