@@ -74,6 +74,7 @@ type FullscreenPromptProps = {
   title: string;
   children?: React.ReactNode;
 };
+
 export function FullscreenPrompt({
   triggerText,
   title,

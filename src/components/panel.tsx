@@ -1,60 +1,69 @@
-import React from "react";
-import { MosaicContext, MosaicBranch } from "react-mosaic-component";
+import React, { useEffect, useRef } from "react";
+import {
+  MosaicContext,
+  MosaicBranch,
+  MosaicWindowContext,
+  MosaicPath,
+  updateTree,
+} from "react-mosaic-component";
 import { XMarkIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 
-const userPanels: { [key: string]: React.FC } = {};
-const panels: { [key: string]: React.FC } = {};
-const userPanelsPreview: { [key: string]: React.FC } = {};
-const panelsPreview: { [key: string]: React.FC } = {};
+type PanelImportType = { [key: string]: React.FC };
 
-type PanelImport = { [key: string]: React.FC };
-const panelImport: PanelImport = import.meta.glob("../panels/*.tsx", {
-  import: "Component",
-  eager: true,
-});
-const userPanelImport: PanelImport = import.meta.glob("../userPanels/*.tsx", {
-  import: "Component",
-  eager: true,
-});
-const panelPreviewImport: PanelImport = import.meta.glob("../panels/*.tsx", {
-  import: "Preview",
-  eager: true,
-});
-const userPanelPreviewImport: PanelImport = import.meta.glob(
-  "../userPanels/*.tsx",
-  {
-    import: "Preview",
-    eager: true,
+const panels = {
+  standard: {
+    components: loadPanels(
+      import.meta.glob("../panels/*.tsx", {
+        import: "Component",
+        eager: true,
+      }),
+    ),
+    previews: loadPanels(
+      import.meta.glob("../panels/*.tsx", {
+        import: "Preview",
+        eager: true,
+      }),
+    ),
   },
-);
+  user: {
+    components: loadPanels(
+      import.meta.glob("../userPanels/*.tsx", {
+        import: "Component",
+        eager: true,
+      }),
+    ),
 
-Object.entries(panelImport).forEach(([panelPath, panelImport]) => {
-  panels[panelPath] = panelImport;
-});
-Object.entries(userPanelImport).forEach(([panelPath, panelImport]) => {
-  userPanels[panelPath] = panelImport;
-});
-Object.entries(panelPreviewImport).forEach(([panelPath, panelImport]) => {
-  panelsPreview[panelPath] = panelImport;
-});
-Object.entries(userPanelPreviewImport).forEach(([panelPath, panelImport]) => {
-  userPanelsPreview[panelPath] = panelImport;
-});
+    previews: loadPanels(
+      import.meta.glob("../userPanels/*.tsx", {
+        import: "Preview",
+        eager: true,
+      }),
+    ),
+  },
+};
+
+function loadPanels(panelImport: PanelImportType) {
+  const ret: PanelImportType = {};
+  Object.entries(panelImport).forEach(([panelPath, panelImport]) => {
+    ret[panelPath] = panelImport;
+  });
+  return ret;
+}
 
 type PanelToolbarProps = {
   title: string;
   path: MosaicBranch[];
 };
 export function PanelToolbar({ title, path }: PanelToolbarProps) {
-  let context = useContext(MosaicContext);
+  const mosaicContext = useContext(MosaicContext);
   return (
     <>
       <p className="text-night-800">{title}</p>
       <XMarkIcon
         className="h-3/4 inline-block ml-auto cursor-pointer"
         onClick={() => {
-          context.mosaicActions.remove(path);
+          mosaicContext.mosaicActions.remove(path);
         }}
       />
     </>
@@ -65,8 +74,38 @@ type PanelPreviewProps = {
   children: React.ReactNode;
 };
 function PanelPreview({ children }: PanelPreviewProps) {
+  const mosaicContext = useContext(MosaicContext);
+  const previewRef: any = useRef(null);
+  useEffect(() => {
+    if (previewRef.current) {
+      previewRef.current.addEventListener("click", () => {
+        let root = mosaicContext.mosaicActions.getRoot();
+        //     mosaicContext.mosaicActions.updateTree(root, [{
+        // [],
+        // spec: {
+        // 	}
+        // }]);
+        updateTree(root ? root : "new", [
+          {
+            path: [],
+            spec: {
+              $set: {
+                direction: "column",
+                first: "new",
+                second: root ? root : "new",
+              },
+            },
+          },
+        ]);
+      });
+    }
+  }, []);
+
   return (
-    <div className="m-2 w-36 inline-block border-night-600 border-[1px] rounded-lg text-center aspect-square">
+    <div
+      ref={previewRef}
+      className="m-2 w-36 inline-block border-night-600 border-[1px] rounded-lg text-center aspect-square cursor-pointer"
+    >
       {children}
     </div>
   );
@@ -74,20 +113,19 @@ function PanelPreview({ children }: PanelPreviewProps) {
 
 export function PanelChooser() {
   const standardPanels: React.ReactNode[] = [];
-  const customPanels: React.ReactNode[] = [];
-  for (let panelPath in panels) {
-    if (!panels[panelPath]) continue;
+  const userPanels: React.ReactNode[] = [];
+
+  for (let panelPath in panels.standard.previews) {
     standardPanels.push(
       <PanelPreview key={panelPath}>
-        {panelsPreview[panelPath]({})}
+        {panels.standard.previews[panelPath]({})}
       </PanelPreview>,
     );
   }
-  for (let panelPath in userPanels) {
-    if (!userPanels[panelPath]) continue;
-    customPanels.push(
+  for (let panelPath in panels.user.previews) {
+    userPanels.push(
       <PanelPreview key={panelPath}>
-        {userPanelsPreview[panelPath]({})}
+        {panels.user.previews[panelPath]({})}
       </PanelPreview>,
     );
   }
@@ -107,11 +145,11 @@ export function PanelChooser() {
           <QuestionMarkCircleIcon className="h-4 ml-1 mb-1 opacity-50 inline-block" />
         </a>
       </div>
-      {customPanels.length === 0 ? (
+      {userPanels.length === 0 ? (
         <p className="text-night-800">Theres nothing here...</p>
       ) : (
         <div className="w-full grid grid-cols-5 gap-5 pt-5 pb-10">
-          {customPanels}
+          {userPanels}
         </div>
       )}
     </>
@@ -122,5 +160,13 @@ type PanelProps = {
   panelPath: string;
 };
 export function Panel({ panelPath }: PanelProps) {
-  return <>{panels[panelPath]({})}</>;
+  return (
+    <>
+      {panels.standard.components[panelPath]
+        ? panels.standard.components[panelPath]({})
+        : panels.user.components[panelPath]
+          ? panels.user.components[panelPath]({})
+          : "You've requested a panel type that doesn't exist. Make sure you've loaded all custom panels into the userPanels folder."}
+    </>
+  );
 }

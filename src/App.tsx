@@ -6,26 +6,35 @@ import { NavBar } from "./components/ui";
 import { Panel, PanelToolbar } from "./components/panel";
 import { ROSLibContextProvider } from "./components/roslibProvider";
 
-export type ViewId = "a" | "b" | "c" | "new";
-
-const TITLE_MAP: Record<ViewId, string> = {
-  a: "Left Window",
-  b: "Top Right Window",
-  c: "Bottom Right Window",
-  new: "New Window",
+type panelInfoType = {
+  title: string;
+  path: string;
 };
+const panels: panelInfoType[] = [
+  {
+    title: "3D View",
+    path: "../panels/ros3djs.tsx",
+  },
+  {
+    title: "Image",
+    path: "../panels/image.tsx",
+  },
+  {
+    title: "Gazebo Sim",
+    path: "../panels/gazebo.tsx",
+  },
+];
 
 function App() {
   return (
     <ROSLibContextProvider>
       <NavBar />
-      <Mosaic<ViewId>
+      <Mosaic<number>
         className="mosaic-visum-theme"
         renderTile={(id, path) => (
-          <MosaicWindow<ViewId>
+          <MosaicWindow<number>
             path={path}
-            createNode={() => "new"}
-            title={TITLE_MAP[id]}
+            title={panels[id].title}
             renderToolbar={(props) => {
               return (
                 <div className="flex w-full h-full items-center">
@@ -36,17 +45,17 @@ function App() {
             className="text-ivory"
           >
             <div className="w-full h-full">
-              <Panel panelPath="../panels/ros3djs.tsx" />
+              <Panel panelPath={panels[id].path} />
             </div>
           </MosaicWindow>
         )}
         initialValue={{
           direction: "row",
-          first: "a",
+          first: 0,
           second: {
             direction: "column",
-            first: "b",
-            second: "c",
+            first: 1,
+            second: 2,
           },
         }}
       />

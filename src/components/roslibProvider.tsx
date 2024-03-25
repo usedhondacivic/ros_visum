@@ -42,7 +42,6 @@ export function ROSLibContextProvider({ children }: any) {
       connected: false,
     });
   });
-
   return (
     <ROSLibReadContext.Provider value={ROSLibInfo}>
       <ROSLibWriteContext.Provider value={setROSLibInfo}>
@@ -69,6 +68,9 @@ export function ConnectionDialog() {
               ...ROSLibInfo,
               rosBridgeServerAddr: e.target.value,
             });
+
+            ROSLibInfo.ros.close();
+            ROSLibInfo.ros.connect(ROSLibInfo.rosBridgeServerAddr);
           }}
         />
       </div>

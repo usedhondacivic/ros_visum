@@ -1,7 +1,7 @@
 export function Preview() {
-  return <p>ROS2d</p>;
+  return <p>IMAGE</p>;
 }
 
 export function Component() {
-  return <p>ROS2d</p>;
+  return <p>IMAGE</p>;
 }
