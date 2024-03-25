@@ -2,8 +2,6 @@ import React, { useEffect, useRef } from "react";
 import {
   MosaicContext,
   MosaicBranch,
-  MosaicWindowContext,
-  MosaicPath,
   updateTree,
 } from "react-mosaic-component";
 import { XMarkIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
