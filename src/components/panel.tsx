@@ -5,20 +5,27 @@ import { WindowManagerContext } from "./windowManager";
 
 // TODO: fix this
 type PanelImportType = { [key: string]: any };
+const standardPanels = loadPanels(
+  import.meta.glob("../panels/*.tsx", {
+    import: "panel",
+    eager: true,
+  }),
+);
+const userPanels = loadPanels(
+  import.meta.glob("../userPanels/*.tsx", {
+    import: "panel",
+    eager: true,
+  }),
+);
+const allPanels = {
+  ...standardPanels,
+  ...userPanels,
+};
 
 export const panels = {
-  standard: loadPanels(
-    import.meta.glob("../panels/*.tsx", {
-      import: "panel",
-      eager: true,
-    }),
-  ),
-  user: loadPanels(
-    import.meta.glob("../userPanels/*.tsx", {
-      import: "panel",
-      eager: true,
-    }),
-  ),
+  standard: standardPanels,
+  user: userPanels,
+  all: allPanels,
 };
 
 function loadPanels(panelImport: PanelImportType) {
@@ -38,7 +45,7 @@ export function PanelToolbar({ title, path }: PanelToolbarProps) {
   return (
     <>
       <div className="w-full h-full overflow-ellipsis">
-        <p className="text-night-800">{panels.standard[title].friendlyName}</p>
+        <p className="text-night-800">{panels.all[title].friendlyName}</p>
       </div>
       <XMarkIcon
         className="flex-shrink-0 aspect-square h-3/4 inline-block ml-auto cursor-pointer"
@@ -120,14 +127,12 @@ type PanelProps = {
 export function Panel({ panelPath }: PanelProps) {
   return (
     <>
-      {panels.standard[panelPath].component
-        ? panels.standard[panelPath].component({})
-        : panels.user[panelPath].component
-          ? panels.user[panelPath].component({})
-          : "You've requested a panel type doesn't exist.\n" +
-            panelPath +
-            " is not a file.\n" +
-            "Make sure you've loaded all custom panels into the userPanels folder."}
+      {panels.all[panelPath].component
+        ? panels.all[panelPath].component({})
+        : "You've requested a panel type doesn't exist.\n" +
+          panelPath +
+          " is not a file.\n" +
+          "Make sure you've loaded all custom panels into the userPanels folder."}
     </>
   );
 }
