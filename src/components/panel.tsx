@@ -3,38 +3,22 @@ import { XMarkIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { WindowManagerContext } from "./windowManager";
 
-type PanelImportType = { [key: string]: React.FC };
+// TODO: fix this
+type PanelImportType = { [key: string]: any };
 
 export const panels = {
-  standard: {
-    components: loadPanels(
-      import.meta.glob("../panels/*.tsx", {
-        import: "Component",
-        eager: true,
-      }),
-    ),
-    previews: loadPanels(
-      import.meta.glob("../panels/*.tsx", {
-        import: "Preview",
-        eager: true,
-      }),
-    ),
-  },
-  user: {
-    components: loadPanels(
-      import.meta.glob("../userPanels/*.tsx", {
-        import: "Component",
-        eager: true,
-      }),
-    ),
-
-    previews: loadPanels(
-      import.meta.glob("../userPanels/*.tsx", {
-        import: "Preview",
-        eager: true,
-      }),
-    ),
-  },
+  standard: loadPanels(
+    import.meta.glob("../panels/*.tsx", {
+      import: "panel",
+      eager: true,
+    }),
+  ),
+  user: loadPanels(
+    import.meta.glob("../userPanels/*.tsx", {
+      import: "panel",
+      eager: true,
+    }),
+  ),
 };
 
 function loadPanels(panelImport: PanelImportType) {
@@ -54,7 +38,7 @@ export function PanelToolbar({ title, path }: PanelToolbarProps) {
   return (
     <>
       <div className="w-full h-full overflow-ellipsis">
-        <p className="text-night-800">{title}</p>
+        <p className="text-night-800">{panels.standard[title].friendlyName}</p>
       </div>
       <XMarkIcon
         className="flex-shrink-0 aspect-square h-3/4 inline-block ml-auto cursor-pointer"
@@ -89,17 +73,17 @@ export function PanelChooser() {
   const standardPanels: React.ReactNode[] = [];
   const userPanels: React.ReactNode[] = [];
 
-  for (let panelPath in panels.standard.previews) {
+  for (let panelPath in panels.standard) {
     standardPanels.push(
       <PanelPreview key={panelPath} path={panelPath}>
-        {panels.standard.previews[panelPath]({})}
+        {panels.standard[panelPath].preview({})}
       </PanelPreview>,
     );
   }
-  for (let panelPath in panels.user.previews) {
+  for (let panelPath in panels.user) {
     userPanels.push(
       <PanelPreview key={panelPath} path={panelPath}>
-        {panels.user.previews[panelPath]({})}
+        {panels.user[panelPath].preview({})}
       </PanelPreview>,
     );
   }
@@ -136,10 +120,10 @@ type PanelProps = {
 export function Panel({ panelPath }: PanelProps) {
   return (
     <>
-      {panels.standard.components[panelPath]
-        ? panels.standard.components[panelPath]({})
-        : panels.user.components[panelPath]
-          ? panels.user.components[panelPath]({})
+      {panels.standard[panelPath].component
+        ? panels.standard[panelPath].component({})
+        : panels.user[panelPath].component
+          ? panels.user[panelPath].component({})
           : "You've requested a panel type doesn't exist.\n" +
             panelPath +
             " is not a file.\n" +

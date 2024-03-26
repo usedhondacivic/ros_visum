@@ -77,7 +77,7 @@ export default function WindowManager() {
         renderTile={(id, path) => (
           <MosaicWindow<string>
             path={path}
-            title={id}
+            title={id.substring(id.indexOf("-") + 1)}
             renderToolbar={(props) => {
               return (
                 <div className="flex w-full h-full items-center">

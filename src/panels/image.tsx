@@ -1,7 +1,18 @@
-export function Preview() {
+function Preview() {
   return <p>IMAGE</p>;
 }
 
-export function Component() {
+function Component() {
   return <p>IMAGE</p>;
 }
+
+function Toolbar() {
+  return <p>Toolbar!</p>;
+}
+
+export const panel = {
+  component: Component,
+  preview: Preview,
+  toolbar: Toolbar,
+  friendlyName: "Image",
+};

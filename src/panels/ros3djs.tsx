@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import * as ROS3D from "ros3d";
 import _debounce from "lodash/debounce";
 
-export function Preview() {
+function Preview() {
   return <p>ROS3D</p>;
 }
 
-export function Component() {
+function Component() {
   const containerRef: any = useRef(null);
   let viewer: any = useRef(null);
 
@@ -32,3 +32,14 @@ export function Component() {
 
   return <div ref={containerRef} className="w-full h-full"></div>;
 }
+
+function Toolbar() {
+  return <p>Toolbar!</p>;
+}
+
+export const panel = {
+  component: Component,
+  preview: Preview,
+  toolbar: Toolbar,
+  friendlyName: "3D View",
+};
