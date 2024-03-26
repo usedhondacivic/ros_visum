@@ -26,7 +26,11 @@ export const ROSLibReadContext = createContext(initROSLibInfo);
 export function ROSLibContextProvider({ children }: any) {
   const [ROSLibInfo, setROSLibInfo] = useState(initROSLibInfo);
 
-  ROSLibInfo.ros.connect(ROSLibInfo.rosBridgeServerAddr);
+  try {
+    ROSLibInfo.ros.connect(ROSLibInfo.rosBridgeServerAddr);
+  } catch (e) {
+    console.log("Failed to connect to ROSLibjs, retrying...");
+  }
   ROSLibInfo.ros.on("connection", () => {
     setROSLibInfo({
       ...ROSLibInfo,
@@ -66,7 +70,8 @@ export function ConnectionDialog() {
           onChange={(e) => {
             setROSLibInfo({
               ...ROSLibInfo,
-              rosBridgeServerAddr: e.target.value,
+              rosBridgeServerAddr:
+                e.target.value != "" ? e.target.value : "ws://",
             });
 
             ROSLibInfo.ros.close();
@@ -85,7 +90,7 @@ export function ConnectionDialog() {
           onChange={(e) => {
             setROSLibInfo({
               ...ROSLibInfo,
-              gzServerAddr: e.target.value,
+              gzServerAddr: e.target.value != "" ? e.target.value : "ws://",
             });
           }}
         />

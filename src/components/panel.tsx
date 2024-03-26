@@ -1,15 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import {
-  MosaicContext,
-  MosaicBranch,
-  updateTree,
-} from "react-mosaic-component";
+import { MosaicContext, MosaicBranch } from "react-mosaic-component";
 import { XMarkIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
+import { WindowManagerContext } from "./windowManager";
 
 type PanelImportType = { [key: string]: React.FC };
 
-const panels = {
+export const panels = {
   standard: {
     components: loadPanels(
       import.meta.glob("../panels/*.tsx", {
@@ -57,9 +53,11 @@ export function PanelToolbar({ title, path }: PanelToolbarProps) {
   const mosaicContext = useContext(MosaicContext);
   return (
     <>
-      <p className="text-night-800">{title}</p>
+      <div className="w-full h-full overflow-ellipsis">
+        <p className="text-night-800">{title}</p>
+      </div>
       <XMarkIcon
-        className="h-3/4 inline-block ml-auto cursor-pointer"
+        className="flex-shrink-0 aspect-square h-3/4 inline-block ml-auto cursor-pointer"
         onClick={() => {
           mosaicContext.mosaicActions.remove(path);
         }}
@@ -70,39 +68,17 @@ export function PanelToolbar({ title, path }: PanelToolbarProps) {
 
 type PanelPreviewProps = {
   children: React.ReactNode;
+  path: string;
 };
-function PanelPreview({ children }: PanelPreviewProps) {
-  const mosaicContext = useContext(MosaicContext);
-  const previewRef: any = useRef(null);
-  useEffect(() => {
-    if (previewRef.current) {
-      previewRef.current.addEventListener("click", () => {
-        let root = mosaicContext.mosaicActions.getRoot();
-        //     mosaicContext.mosaicActions.updateTree(root, [{
-        // [],
-        // spec: {
-        // 	}
-        // }]);
-        updateTree(root ? root : "new", [
-          {
-            path: [],
-            spec: {
-              $set: {
-                direction: "column",
-                first: "new",
-                second: root ? root : "new",
-              },
-            },
-          },
-        ]);
-      });
-    }
-  }, []);
+function PanelPreview({ children, path }: PanelPreviewProps) {
+  const WindowManagerInfo = useContext(WindowManagerContext);
 
   return (
     <div
-      ref={previewRef}
       className="m-2 w-36 inline-block border-night-600 border-[1px] rounded-lg text-center aspect-square cursor-pointer"
+      onClick={() => {
+        WindowManagerInfo.addNewPanel(path);
+      }}
     >
       {children}
     </div>
@@ -115,14 +91,14 @@ export function PanelChooser() {
 
   for (let panelPath in panels.standard.previews) {
     standardPanels.push(
-      <PanelPreview key={panelPath}>
+      <PanelPreview key={panelPath} path={panelPath}>
         {panels.standard.previews[panelPath]({})}
       </PanelPreview>,
     );
   }
   for (let panelPath in panels.user.previews) {
     userPanels.push(
-      <PanelPreview key={panelPath}>
+      <PanelPreview key={panelPath} path={panelPath}>
         {panels.user.previews[panelPath]({})}
       </PanelPreview>,
     );
@@ -164,7 +140,10 @@ export function Panel({ panelPath }: PanelProps) {
         ? panels.standard.components[panelPath]({})
         : panels.user.components[panelPath]
           ? panels.user.components[panelPath]({})
-          : "You've requested a panel type that doesn't exist. Make sure you've loaded all custom panels into the userPanels folder."}
+          : "You've requested a panel type doesn't exist.\n" +
+            panelPath +
+            " is not a file.\n" +
+            "Make sure you've loaded all custom panels into the userPanels folder."}
     </>
   );
 }
